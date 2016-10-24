@@ -8,7 +8,9 @@ October 2016
 This repository contains code for a REAL TIME OPEARATING SYSTEM made for an Bluetooth Enabled Fitness Device.
 This is a part of an online course REAL-TIME-BLUETOOTH-NETWORKS offered by edX. 
 
-There are sub folders containing different LABs which are covered as a part of the coursework.
-The code is written in C. 
+There are sub folders containing different LABs which are covered as a part of the coursework are done is C.
+Some folders contains implementation of data-structures and programming pratice in C/C++.
+
+
 
 
