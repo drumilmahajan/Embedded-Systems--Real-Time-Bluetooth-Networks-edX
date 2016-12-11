@@ -12,9 +12,9 @@
         PRESERVE8
 
         EXTERN  RunPt            ; currently running thread
-        EXPORT  StartOS
-        EXPORT  SysTick_Handler
-        IMPORT  Scheduler
+        EXPORT  StartOS			 ; Defined in C and written in assembly
+        EXPORT  SysTick_Handler  ; Written in assembly and can be used in C
+        IMPORT  Scheduler		; importing C subroutine by calling import, written in C and can be used in assembly. 
 
 
 
@@ -26,8 +26,13 @@ SysTick_Handler                ; 1) Saves R0-R3,R12,LR,PC,PSR
 	LDR R1, [R0] 			   ; Loading the contents of RunPt to R1. Now R1 has address of current runnig thread's TCB
 	LDR [R1], SP			   ; Present thread's SP to its TCB. 
 	
-	LDR R1, [R1, #4]		   ; Accesing next of present TCB and loading its contents in R1 which is address of TCB of next thread
-	STR R1, [R0] 			   ; Putting the address of next thread's TCB in current RunPt
+;	LDR R1, [R1, #4]		   ; Accesing next of present TCB and loading its contents in R1 which is address of TCB of next thread
+;	STR R1, [R0] 			   ; Putting the address of next thread's TCB in current RunPt
+	
+	PUSH {R0, LR}				; R0 was pointing of run pointer so need to be pushed. LR contains the 0xFFFFFFF9 and we need to save it.
+	BL Scheduler 				; Running C subroutine ; Scheduler can changed R0 and hence we saved it. 
+	POP {R0, LR}				; Popping back the contents of R0 and LR back ; LR contains the address 0xFFFFFFF9
+	
 	LDR SP, [R1]			   ; Putting the contents of r1 which is SP of next thread in the system's SP
 	
 	POP {R4-R11}			   ; Popping the R4-R11 manually
