@@ -64,9 +64,24 @@ int OS_AddThreads(void(*thread0)(void),
 // initialize TCB circular list
 // initialize RunPt
 // initialize four stacks, including initial PC
-  //***YOU IMPLEMENT THIS FUNCTION*****
-
-  return 1;               // successful
+	
+	int32_t status;
+	status = StartCritical();
+										
+	// setting tcb's next pointer to the address of ntcb of next thread
+	tcbs[0].next = &tcbs[1];
+	tcbs[1].next = &tcbs[2];
+  tcbs[2].next = &tcbs[4];
+	tcbs[3].next = &tcbs[0];										
+										
+	SetInitialStack(0) ; Stacks[0][STACKSIZE - 2] = (int32_t) (thread0);
+	SetInitialStack(1) ; Stacks[1][STACKSIZE - 2] = (int32_t) (thread1);
+	SetInitialStack(2) ; Stacks[2][STACKSIZE - 2] = (int32_t) (thread2);
+	SetInitialStack(3) ; Stacks[3][STACKSIZE - 2] = (int32_t) (thread3);
+										
+  RunPt = &tcbs[0];
+	EndCritical(status);
+	return 1;               // successful
 }
 //******** OS_AddThreads3 ***************
 // add three foregound threads to the scheduler
@@ -79,7 +94,7 @@ int OS_AddThreads3(void(*task0)(void),
 // initialize TCB circular list (same as RTOS project)
 // initialize RunPt
 // initialize four stacks, including initial PC
-  //***YOU IMPLEMENT THIS FUNCTION*****
+	
 
   return 1;               // successful
 }
