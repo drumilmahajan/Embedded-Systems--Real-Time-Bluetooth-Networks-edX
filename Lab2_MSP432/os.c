@@ -118,6 +118,8 @@ uint32_t period_t2   ;   				// Period with with we wath the function to be call
 int OS_AddPeriodicEventThreads(void(*thread1)(void), uint32_t period1,
   void(*thread2)(void), uint32_t period2){
   
+		// Updating local function pointers and varialbes to the received FP and variables
+		// These local FD and varialbes will be used to call Event threads. 
 		PeriodicTask1 = thread1;
 		period_t1 = period1;
 		
@@ -141,10 +143,21 @@ void OS_Launch(uint32_t theTimeSlice){
   StartOS();                   // start on the first task
 }
 // runs every ms
+uint32_t counter1 = 0 ; // counter to run PereodicTask 1
+uint32_t counter2 = 0 ; // counter to run periodic task 2
 void Scheduler(void){ // every time slice
-  // run any periodic event threads if needed
-  // implement round robin scheduler, update RunPt
-  
+	
+	// if time elapsed is equal to the time Periodic task need to be called then run the task
+	if((++counter1) == period_t1) {
+		(*PeriodicTask1)(); // Calling the periodic task
+		counter1 = 0; // Resetting the counter
+	}
+	
+	// if time elapsed is equal to the time Periodic task need to be called
+	if((++counter2) == period_t2) {
+		(*PeriodicTask2)(); // Calling the periodic task 
+		counter2 = 0; // Resetting the counter. 
+	}
 	RunPt = RunPt->next;
   
 }
@@ -155,8 +168,10 @@ void Scheduler(void){ // every time slice
 //          initial value of semaphore
 // Outputs: none
 void OS_InitSemaphore(int32_t *semaPt, int32_t value){
-  //***YOU IMPLEMENT THIS FUNCTION*****
-
+  // Initial value of semaphore.4
+	// If one, behaves as a mutex.
+	// If zero, used for synchronization. 
+	*semaPt = value; 
 }
 
 // ******** OS_Wait ************
@@ -166,7 +181,16 @@ void OS_InitSemaphore(int32_t *semaPt, int32_t value){
 // Inputs:  pointer to a counting semaphore
 // Outputs: none
 void OS_Wait(int32_t *semaPt){
-
+	
+	DisableInterrupts();
+	
+	while( (*semaPt) == 0 ) {
+		EnableInterrupts();
+		DisableInterrupts();
+	}
+	
+	(*semaPt)--;
+	EnableInterrupts();
 }
 
 // ******** OS_Signal ************
@@ -176,8 +200,9 @@ void OS_Wait(int32_t *semaPt){
 // Inputs:  pointer to a counting semaphore
 // Outputs: none
 void OS_Signal(int32_t *semaPt){
-//***YOU IMPLEMENT THIS FUNCTION*****
-
+	DisableInterrupts();
+	(*semaPt)++;
+	EnableInterrupts();
 }
 
 
@@ -190,7 +215,7 @@ void OS_Signal(int32_t *semaPt){
 // Outputs: none
 void OS_MailBox_Init(void){
   // include data field and semaphore
-  //***YOU IMPLEMENT THIS FUNCTION*****
+  
 
 }
 
