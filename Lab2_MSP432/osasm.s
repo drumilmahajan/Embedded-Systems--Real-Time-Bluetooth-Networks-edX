@@ -50,7 +50,7 @@ StartOS
 	
 	ADD SP, #4				   ; PSR is not valid yet so just skipped.
     CPSIE   I                  ; Enable interrupts at processor level
-    BX      LR                 ; start first thread
+    BX      LR                 ; start first thread ; return to the PC which is now present in LR of system
 
     ALIGN
     END
