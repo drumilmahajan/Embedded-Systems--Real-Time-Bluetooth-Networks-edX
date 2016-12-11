@@ -108,9 +108,21 @@ int OS_AddThreads3(void(*task0)(void),
 // It is assumed the time to run these event threads is short compared to 1 msec
 // These threads cannot spin, block, loop, sleep, or kill
 // These threads can call OS_Signal
+
+void (*PeriodicTask1) (void); // Function pointer to a void-void function. Will be set to the pointer to a function sent to Periodic thread function
+uint32_t period_t1   ;   				// Period with with we wath the function to be called
+
+void (*PeriodicTask2) (void); // Function pointer to a void-void function. Will be set to the pointer to a function sent to Periodic thread function
+uint32_t period_t2   ;   				// Period with with we wath the function to be called
+
 int OS_AddPeriodicEventThreads(void(*thread1)(void), uint32_t period1,
   void(*thread2)(void), uint32_t period2){
-  //***YOU IMPLEMENT THIS FUNCTION*****
+  
+		PeriodicTask1 = thread1;
+		period_t1 = period1;
+		
+		PeriodicTask2 = thread2;
+		period_t2 = period2;
 
   return 1;
 }
